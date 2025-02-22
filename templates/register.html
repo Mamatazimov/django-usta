@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Test{% endblock %}
+
+{% block content %}
+<div class="ui container segment" style="margin-top: 1rem;">
+  <h1>Ro'yhatdan o'tish</h1>
+  <form class="ui form" method="post">
+    {% csrf_token %}
+    <div class="field">
+        <label>Email</label>
+        {{ form.email }}
+      </div>
+    <div class="field">
+      <label>Ism</label>
+      {{ form.name }}
+    </div>
+    <div class="field">
+      <label>Parol</label>
+      {{ form.password }}
+    </div>
+    <div class="field">
+      <div class="ui checkbox">
+        {{ form.simpleUser }}
+        <label>Usta sifatida ro'yhatdan o'tayabsiz?</label>
+      </div>
+    </div>
+    <button class="ui inverted secondary button" type="submit">Jo'natish</button>
+  </form>
+  {% if form.errors %}
+    <div class="ui error message">
+        {% for field, errors in form.errors.items %}
+            {% for error in errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        {% endfor %}
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}
+
