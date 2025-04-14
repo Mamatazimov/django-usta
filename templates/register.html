@@ -8,24 +8,36 @@
   <form class="ui form" method="post">
     {% csrf_token %}
     <div class="field">
-        <label>Email</label>
-        {{ form.email }}
-      </div>
+      <label>Email</label>
+      {{ form.email }}
+      {% if form.email.errors %}
+        <div class="ui pointing red basic label">
+          {% for error in form.email.errors %}
+            <p>{{ error }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
     <div class="field">
-      <label>Ism</label>
-      {{ form.name }}
+      <label>Username</label>
+      {{ form.username }}
     </div>
     <div class="field">
       <label>Parol</label>
-      {{ form.password }}
+      {{ form.password1 }}
+    </div>
+    <div class="field">
+      <label>Parol(takrorlash)</label>
+      {{ form.password2 }}
     </div>
     <div class="field">
       <div class="ui checkbox">
-        {{ form.simpleUser }}
+        {{ form.user_status }}
         <label>Usta sifatida ro'yhatdan o'tayabsiz?</label>
       </div>
     </div>
     <button class="ui inverted secondary button" type="submit">Jo'natish</button>
+    <a type="button" href="{% url 'login' %}" style="padding: 0.5rem;">Login</a>
   </form>
   {% if form.errors %}
     <div class="ui error message">

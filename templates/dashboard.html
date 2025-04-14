@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- Navbar -->
+<div class="ui container">
+    <div class="ui menu fixed" style="max-width: 80rem;left: 50%;transform: translateX(-50%);">
+        <a class="item ui button" href="/home">Asosiy sahifa</a>
+        <a class="item" href="/ustalar">Ustalar</a>
+        <a class="item">Chatlar</a>
+        <div class="right menu">
+            <a class="item">Kategoriya</a>
+            <form class="item" method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="ui button inverted red" type="submit">Logout</button>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Main -->
+<div class="ui container" style="margin-top: 5rem;">
+
+    <div class="ui grid">
+        <div class="row" >
+
+            {% load static %}
+            <div class="six wide column">
+                <img src="{{ profile.avatar.url }}" alt="logo rasm" class="ui medium image rounded ui column centered grid" >
+            </div>
+        
+            <div class="ten wide column">
+                <h1 class="ui text">Profil ma'lumotlari</h1>
+                <hr>
+                <h3>Ism: <i>{{ user.first_name }}</i></h3>
+                <h3>Familiya: <i>{{ user.last_name }}</i></h3>
+                <h3>Username: <i>{{ user.username }}</i></h3>
+                <h3>Yosh: <i>{{ profile.age }}</i></h3>
+                <h3>Maqom: <i>{% if user.user_status == True %}
+                    Usta 
+                        {% if category %}
+                            |Mahorat: <i>{{ category }}</i>
+                        {% endif %}
+                    {% else %}
+                    Klent 
+                    {% endif %}
+                </i></h3>
+            </div>
+        </div>
+        <div class="row"><div class="sixteen wide column"><hr></div></div>
+        <div class="row">
+            <h1 class="four wide column">Aloqa usullari:</h1>
+                {% if profile.telegram_link != None %}
+                    <h3 class="three wide column">
+                        <a href="{{ profile.telegram_link }}">Telegram</a>
+                    </h3>
+                {% endif %}
+                {% if profile.instagram_link != None %}
+                    <h3 class="three wide column">
+                        <a href="{{ profile.instagram_link }}">Instagram</a>
+                    </h3>
+                {% endif %}
+                {% if profile.phone_number != None %}
+                    <h3 class="three wide column">
+                        {{ profile.phone_number }}
+                    </h3>
+                {% endif %}                
+                {% if user.email != None %}
+                    <h3 class="three wide column">
+                        <a href="mailto:{{ user.email }}">Email</a>
+                    </h3>
+                {% endif %}
+        </div>
+        {% if user.user_status == True %}
+        <div class="row">
+            <h2 class="ui column centered grid">Oldingi ishlardan namuna</h2>
+        </div>
+        <div class="row">
+            
+            {% for post in posts %}
+                    <div class="eight wide column brdr">
+                        <img src="{{ post.photo.url }}" alt="{{ post.body }}" class="ui medium image rounded">
+                    </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <div class="row">
+            <a class="fluid ui button" href="{% url 'dashboard_edit' %}">Tahrirlash</a>
+        </div>
+    </div>
+</div>
+<style>
+    .brdr{
+        border: 1px solid #d4d4d5;
+        border-radius: 1rem;   
+    }
+    .brdr img{
+        object-fit: contain;
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border: 1px solid #262627;
+        padding: 0.3rem;
+    }
+</style>
+
+
+
+{% endblock %}

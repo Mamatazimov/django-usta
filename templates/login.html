@@ -1,12 +1,39 @@
-{{ extends "base.html" }}
+{% extends "base.html" %}
 
-{{ block title }}Hisobga kirish{{ endblock }}
+{% block title %}Hisobga kirish{% endblock %}
 
-{{ block content }}
-
-
+{% block content %}
 
 
 
-{{  endblock }}
+<div class="ui segment segment container" style="margin-top: 1rem;">
+    <h1>Hisobga kirish</h1>
+    <form action="" class="ui form" method="post">
+
+    {% csrf_token %}
+        <div class="field">
+            <label>Username</label>
+            {{ form.username }}
+        </div>
+        <div class="field">
+            <label>Parol</label>
+            {{ form.password }}
+        </div>
+        <button class="ui inverted secondary button" type="submit">Kirish</button>
+        <a type="button" href="{% url 'register' %}" style="padding: 0.5rem;">Ro'yhatdan o'tish</a>
+
+    </form>
+    {% if form.errors %}
+    <div class="ui error message">
+        {% for field, errors in form.errors.items %}
+            {% for error in errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+</div>
+
+{%  endblock %}
 

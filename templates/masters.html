@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Ustalar{% endblock %}
+
+{% block content %}
+<!-- Navbar -->
+<div class="ui container">
+    <div class="ui menu fixed" style="max-width: 80rem;left: 50%;transform: translateX(-50%);">
+        <a class="item ui button" href="/home">Asosiy sahifa</a>
+        <a class="item" href="/ustalar">Ustalar</a>
+        <a class="item">Chatlar</a>
+        <div class="right menu">
+            <div class="right menu">
+                <a class="item">Kategoriya</a>
+                <a href="{% url 'dashboard' %}" class="item">Profil</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Main -->
+<div class="ui container" style="margin-top: 5rem;">
+    <h2 class="ui header">Ustalar</h2>
+    <div class="ui grid">
+        <div class="three column row">
+            {% for usr in mainList %}
+            <div class="column">
+                <div class="ui card">
+                    <div class="image">
+                        {% if usr.2 %}
+                        <img src="{{ usr.2.url }}" alt="User Image">
+                        {% else %}
+                        <img src="/media/avatars/default.png" alt="Placeholder Image">
+                        {% endif %}
+                    </div>
+                    <div class="content">
+                    <a class="header">{{ usr.0 }}</a>
+                    <div class="meta">
+                        <span class="date">{{ usr.1|date:"F j,Y" }}</span>
+                    </div>
+                    <div class="description">
+                        {{ usr.3 }}
+                    </div>
+                    </div>
+                        <div class="extra content">
+                            <a>
+                                <i class="user icon"></i>
+                            </a>
+                        </div>
+                </div> 
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row" style="margin-top: 2rem;">
+        <div class="ui column centered grid">
+            <div class="ui large buttons">
+                {% if mainList.has_previous %}
+                <a class="ui button" href="?page={{ mainList.previous_page_number }}">Orqaga</a>
+                {% else %}
+                <a class="ui button disabled">Orqaga</a>
+                {% endif %}
+                <div class="or"></div>
+                {% if mainList.has_next %}
+                <a class="ui button" href="?page={{ mainList.next_page_number }}">Oldinga</a>
+                {% else %}
+                <a class="ui button disabled">Oldinga</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}

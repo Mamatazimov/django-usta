@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-u+yt%jcr5^m3lwd3ftd27d62*7y9ma&7a6x+ge-dp)_-72g)va
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -38,8 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
     # my apps
-    "register"
+    "register",
+    "main",
+    "chat",
+    # third party apps
 ]
 
 MIDDLEWARE = [
@@ -72,6 +76,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'manage.wsgi.application'
 
+ASGI_APPLICATION = 'manage.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer'
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -119,8 +130,21 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+# Loyiha ichidagi static fayllar joylashuvi
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]  
+# Static fayllarni boshqa joyga saqlash uchun
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles") 
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Custom user model
+AUTH_USER_MODEL = "register.CustomUser"
+
+# Logout redirect
+LOGOUT_REDIRECT_URL = "home"

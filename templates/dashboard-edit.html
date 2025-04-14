@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Edit{% endblock %}
+
+{% block extra_css %}
+
+<style>
+    .brdr{
+        border: 1px solid #d4d4d5;
+        border-radius: 1rem;   
+    }
+    .brdr img{
+        object-fit: contain;
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border: 1px solid #262627;
+        padding: 0.3rem;
+    }
+    .myinput{
+    margin: 0;
+    max-width: 100%;
+    flex: 1 0 auto;
+    outline: 0;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+    text-align: left;
+    line-height: 1.21428571em;
+    font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    padding: .3rem 2em;
+    background: #fff;
+    border: 1px solid rgba(34, 36, 38, .15);
+    color: rgba(0, 0, 0, .87);
+    border-radius: .28571429rem;
+    transition: box-shadow .1sease, border-color .1sease;
+    box-shadow: none;
+    }
+    #imageUpload {
+    display: none;
+    }
+    .myimg{
+        transition: filter 0.3s ease;
+    }
+    .myimg:hover{
+        cursor: pointer;
+        filter: brightness(70%);
+    }
+    .imgcontainer:hover .imgtext{
+        z-index: 1;
+        transform: translateY(-50%) scale(2.4);
+    }
+    .imgtext{
+        position: absolute;
+        color: rgb(143, 140, 140);
+        top: 50%;
+        left: 50%;
+        transition: transform 0.3s ease;
+        transition: z-index 0.3s ease;
+        transition: color 0.3s ease;
+        transform: translate(-50%,-50%);
+    }
+    .imgtext:hover{
+        color: #d4d4d5;
+        cursor: pointer;
+    }
+    .imgcontainer{
+        position: relative;
+    }
+    #message{
+        position: absolute;
+        top: 90%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        padding-top: 0.1rem;
+        padding-bottom: 0.1rem;
+        opacity: 0.75;
+    }
+
+    #postPhoto{
+        display: none;
+    }
+    .postPhotoLabel{
+        margin: 2rem;
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+    }
+    #postBody{
+        width: 100%;
+        height: 3.5rem;
+        border-color: #54c8ff;
+        border-radius: 0.2rem;
+        resize: none;
+        padding: 0.3rem;
+        font-size: 1.24rem;
+    }
+    .delbox{
+        display: none;
+    }
+    .delbox:checked ~ .delboxlabel{
+        background-color: red;
+        opacity: 0.1;
+    }
+    .delboxlabel{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 1rem;
+        cursor: pointer;
+    }
+    .delboxlabel:hover{
+        background-color: red;
+        opacity: 0.1;
+    }
+</style>
+
+
+{% endblock %}
+
+{% block content %}
+
+<!-- Navbar -->
+<div class="ui container">
+    <div class="ui menu fixed" style="max-width: 80rem;left: 50%;transform: translateX(-50%);">
+        <a class="item ui button" href="/home">Asosiy sahifa</a>
+        <a class="item" href="/ustalar">Ustalar</a>
+        <a class="item">Chatlar</a>
+        <div class="right menu">
+            <a class="item">Kategoriya</a>
+            <form class="item" method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="ui button inverted red" type="submit">Logout</button>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Main -->
+<form method="post" enctype="multipart/form-data" >
+    {% csrf_token %}
+
+    <div class="ui container" style="margin-top: 5rem;">
+        {% if msg %}
+            <div class="ui red message">{{ msg }}</div>
+        {% endif %}
+        <div class="ui grid">
+            <div class="row" >
+
+                <div class="six wide column">
+                    {% load static %}
+                    {{ profile_form.avatar }}
+                    <label for="imageUpload">
+                        <div class="imgcontainer">
+                            <h1 class="imgtext"><i class="folder open outline icon"></i></h1>
+                            <img src="{{ logo.url }}" alt="logo" class="ui medium image rounded myimg column centered grid">
+                            <div id="message"></div>
+
+                        </div>
+                    </label>
+                </div>
+
+
+
+                <div class="ten wide column">
+                    <h1 class="ui text">Profil ma'lumotlari</h1>
+                    <hr>
+                    <h3>Ism: 
+                        {{ user_form.first_name }}
+                    </h3>
+                    <h3>Familiya: 
+                        {{ user_form.last_name }}
+                    </h3>
+                    <h3>Username: <i>{{ user.username }}</i></h3>
+                    <h3>Yosh: 
+                        {{ profile_form.age }}
+                    </h3>
+                    <h3>Maqom: <i>{% if status == True %}Usta{% else %}Klent{% endif %}</i></h3>
+                    <h3>{{ category }}</h3>
+
+                </div>
+            </div>
+            <div class="row"><div class="sexteen wide column"><hr></div></div>
+            <div class="row">
+                
+                <h1 class="ui column centered grid">Aloqa usullari</h1>
+            </div>
+            <div class="row">
+                    <h3 class="four wide column">
+                        {{ profile_form.telegram_link }}
+                    </h3>
+                    <h3 class="four wide column">
+                        {{ profile_form.instagram_link }}
+                    </h3>
+                    <h3 class="four wide column">
+                        {{ profile_form.phone_number }}
+                    </h3>
+                    <h3 class="four wide column">
+                        <input type="email"  value="{{ user.email }}" name="email" class="myinput" disabled>
+                    </h3>
+            </div>
+            {% if status == True %}
+
+            <div class="row">
+                <h2 class="ui column centered grid">Oldingi ishlardan namuna</h2>
+            </div>
+            <div class="row">
+                {% for post in posts %}
+                    <div class="eight wide column brdr">
+                        <img src="{{ post.photo.url }}" alt="{{ post.body }}" class="ui medium image rounded postimg">
+                        <input class="delbox" type="checkbox" id="delboxlabel_{{ post.id }}" name="post_ids" value="{{ post.id }}">
+                        <label class="delboxlabel" for="delboxlabel_{{ post.id }}"></label>
+                    </div>
+                {% endfor %}
+                <div class="eight wide column brdr">
+                    <div class="row">
+                        {{ post_form.photo }}
+                        <label class="postPhotoLabel" for="postPhoto"><div class="ui fluid big inverted primary button"><i class="ui upload icon"></i></div></label>
+                    </div>
+                    <div class="row">
+                        {{ post_form.body }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <div class="row">
+                <button class="fluid ui primary large button" type="submit" name="editing">Tayyor</button>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+
+
+<script>
+    document.getElementById("imageUpload").addEventListener("change", function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+    
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        
+        img.onload = function() {
+            if (img.width === img.height) {
+                document.getElementById("message").textContent = "Rasm muvaffaqiyatli yuklandi!";
+                document.getElementById("message").className = "ui mini green message";
+            } else {
+                document.getElementById("message").textContent = "Rasm o'lchami mos kelmadi!";
+                document.getElementById("message").className = "ui mini red message";
+                event.target.value = ""; // Faylni bekor qilish
+            }
+        };
+    });
+</script>
+
+{% endblock %}
+
+
+
+
+

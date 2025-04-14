@@ -1,0 +1,87 @@
+<h2>Chat with {{ other_user.username }}</h2>
+<!-- Xavfsizlik uchun chat-boxni to'g'ridan-to'g'ri HTML qo'shishdan himoyalash -->
+<div id="chat-box" style="height: 300px; overflow-y: scroll; border: 1px solid #ccc; margin-bottom: 10px; padding: 5px;"></div>
+<input type="text" id="chat-message-input" style="width: 80%;">
+<button id="chat-message-submit">Send</button>
+
+<script>
+    const otherUser = "{{ other_user.username|escapejs }}"; // escapejs qo'shish xavfsizlik uchun
+    const chatBox = document.getElementById('chat-box');
+    const chatInput = document.getElementById('chat-message-input');
+    const chatSubmit = document.getElementById('chat-message-submit');
+
+    // HTTPS ni ham hisobga olish
+    const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+    const chatSocket = new WebSocket(
+        protocol + window.location.host + '/ws/chat/' + otherUser + '/'
+    );
+
+    chatSocket.onopen = function(e) {
+        console.log("WebSocket connection opened!");
+        chatInput.focus(); // Ulanish ochilganda inputga fokus qilish
+    };
+
+    chatSocket.onmessage = function(e) {
+        console.log("Message received:", e.data);
+        try {
+            const data = JSON.parse(e.data);
+            const messageElement = document.createElement('p');
+
+            // XSS hujumlaridan himoyalanish uchun textContent ishlatish
+            const senderElement = document.createElement('strong');
+            senderElement.textContent = data.sender + ": ";
+            messageElement.appendChild(senderElement);
+            messageElement.appendChild(document.createTextNode(data.message));
+
+            chatBox.appendChild(messageElement);
+            // Yangi xabar kelganda pastga scroll qilish
+            chatBox.scrollTop = chatBox.scrollHeight;
+        } catch (error) {
+            console.error("Error parsing received message or updating chat box:", error);
+        }
+    };
+
+    chatSocket.onerror = function(e) {
+        console.error("WebSocket error observed:", e);
+        // Foydalanuvchiga xatolik haqida xabar berish mumkin
+        const errorElement = document.createElement('p');
+        errorElement.style.color = 'red';
+        errorElement.textContent = 'WebSocket connection error. Please refresh the page.';
+        chatBox.appendChild(errorElement);
+    };
+
+    chatSocket.onclose = function(e) {
+        console.warn('WebSocket connection closed. Code:', e.code, 'Reason:', e.reason, 'Clean:', e.wasClean);
+        // Foydalanuvchiga ulanish uzilgani haqida xabar berish
+        const closeElement = document.createElement('p');
+        closeElement.style.color = 'orange';
+        closeElement.textContent = 'Chat connection closed.';
+        chatBox.appendChild(closeElement);
+        // Input va tugmani o'chirish
+        chatInput.disabled = true;
+        chatSubmit.disabled = true;
+    };
+
+    function sendMessage() {
+        const message = chatInput.value.trim();
+        if (message && chatSocket.readyState === WebSocket.OPEN) { // Faqat ulanish ochiq bo'lsa va xabar bo'sh bo'lmasa
+            console.log("Sending message:", message);
+            chatSocket.send(JSON.stringify({ "message": message }));
+            chatInput.value = "";
+        } else if (chatSocket.readyState !== WebSocket.OPEN) {
+            console.error("Cannot send message, WebSocket is not open. State:", chatSocket.readyState);
+        }
+    }
+
+    // Tugma bosilganda xabar yuborish
+    chatSubmit.addEventListener('click', sendMessage);
+
+    // Enter tugmasi bosilganda xabar yuborish
+    chatInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Formani submit qilishni oldini olish
+            sendMessage();
+        }
+    });
+
+</script>
