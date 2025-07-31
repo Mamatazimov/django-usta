@@ -127,7 +127,6 @@
         <a class="item" href="/ustalar">Ustalar</a>
         <a class="item">Chatlar</a>
         <div class="right menu">
-            <a class="item">Kategoriya</a>
             <form class="item" method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button class="ui button inverted red" type="submit">Logout</button>
@@ -175,7 +174,8 @@
                         {{ profile_form.age }}
                     </h3>
                     <h3>Maqom: <i>{% if status == True %}Usta{% else %}Klent{% endif %}</i></h3>
-                    <h3>{{ category }}</h3>
+                    {% if status == True %}<h3>{{ category }}</h3>{% endif %}
+
 
                 </div>
             </div>

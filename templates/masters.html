@@ -11,11 +11,23 @@
         <a class="item">Chatlar</a>
         <div class="right menu">
             <div class="right menu">
-                <a class="item">Kategoriya</a>
+                <a class="item">
+                    <input type="checkbox" id="categoryChecker">
+                    <label for="categoryChecker" class="categoryCheckerLabel">Kategoriya</label>
+                </a>
                 <a href="{% url 'dashboard' %}" class="item">Profil</a>
             </div>
         </div>
     </div>
+
+    <div id="categoryMenu">
+        <div class="ui menu fixed" style="max-width: 80rem;left: 50%;transform: translateX(-50%);top: 5%;">
+            {% for category in categorys %}
+                <a class="item" href="/ustalar/{{ category }}">{{ category }}</a>
+            {% endfor %}
+        </div>
+    </div>
+
 </div>
 <!-- Main -->
 <div class="ui container" style="margin-top: 5rem;">
@@ -33,7 +45,7 @@
                         {% endif %}
                     </div>
                     <div class="content">
-                    <a class="header">{{ usr.0 }}</a>
+                    <a class="header" href="{% url 'master' usr.0 %}">{{ usr.0 }}</a>
                     <div class="meta">
                         <span class="date">{{ usr.1|date:"F j,Y" }}</span>
                     </div>
@@ -69,8 +81,25 @@
         </div>
     </div>
 </div>
+<style>
+    #categoryChecker{
+        display: none;
+    }
+    .categoryCheckerLabel:hover{
+        cursor: pointer;
+    }
+    #categoryMenu{
+        display: none;
+    }
+</style>
+<script>
+    const checkbox = document.getElementById('categoryChecker');
+    const menu = document.getElementById('categoryMenu');
 
-
+    checkbox.addEventListener('change', function() {
+      menu.style.display = this.checked ? 'block' : 'none';
+    });
+</script>
 
 
 {% endblock %}

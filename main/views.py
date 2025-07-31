@@ -84,6 +84,8 @@ class MastersTamplateView(TemplateView):
         user = self.request.user
         context['user'] = CustomUser.objects.filter(user_status=1 or True)
         context['profile'] = Profile.objects.filter(user__user_status=1 or True)
+        context['categorys'] = MatersCategory.objects.values_list('name',flat=True)
+
 
         ex_list = []
         for i in context['user']:
@@ -107,6 +109,7 @@ class MastersCategoryTamplateView(TemplateView):
         cmaster = self.kwargs.get('ustalar_category')
         context['user'] = CustomUser.objects.filter(user_status=1 or True)
         context['profile'] = Profile.objects.filter(user__user_status=1 or True)
+        context['categorys'] = MatersCategory.objects.values_list('name',flat=True)
 
         ex_list = []
         for i in context['user']:
@@ -122,5 +125,17 @@ class MastersCategoryTamplateView(TemplateView):
         context['currentPage'] = int(page_number)
 
         return context
+
+class MasterTemplateView(View):
+    def get(self,request,**kwargs):
+
+        master_username=self.kwargs.get("usta_username")
+        print(master_username)
+        user=self.request.user
+        master=CustomUser.objects.get(username=master_username)
+        posts=Post.objects.filter(user_id=master.id)
+
+        return render(request,"master.html",{"master":master,"user":user,"posts":posts})
+
 
 
