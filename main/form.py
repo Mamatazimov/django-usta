@@ -1,4 +1,4 @@
-from .models import Profile, Post, MatersCategory
+from .models import Profile, Post, MastersCategory
 from django import forms
 from django.contrib.auth.models import User
 
@@ -29,7 +29,7 @@ class PostForm(forms.ModelForm):
 
 class CategoryForm(forms.Form):
     selected_option = forms.ModelChoiceField(
-        queryset=MatersCategory.objects.all(),
+        queryset=MastersCategory.objects.all(),
         empty_label=None,
         required=False,
         label="Mahorat"

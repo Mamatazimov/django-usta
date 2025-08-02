@@ -4,7 +4,7 @@ from django.views import View
 from django.core.paginator import Paginator
 from django.views.generic import TemplateView
 from .form import ProfileForm, UserForm, PostForm, CategoryForm
-from .models import Profile, Post, MatersCategory
+from .models import Profile, Post, MastersCategory
 from register.models import CustomUser
 from chat.models import Message
 # Create your views here.
@@ -13,7 +13,8 @@ class HomePageView(TemplateView):
     template_name = 'home.html'
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categorys'] = MatersCategory.objects.values_list('name',flat=True)
+        context['categorys'] = MastersCategory.objects.values_list('name',flat=True)
+        print(context)
         return context
 
 class DashboardView(LoginRequiredMixin,TemplateView):

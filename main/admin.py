@@ -2,6 +2,6 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import Profile, Post, MatersCategory
+from .models import Profile, Post, MastersCategory
 
-admin.site.register(MatersCategory)
+admin.site.register(MastersCategory)

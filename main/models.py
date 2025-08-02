@@ -10,7 +10,7 @@ class Profile(models.Model):
     phone_number = models.CharField(max_length=20,blank=True,null=True)
     telegram_link = models.URLField(blank=True,null=True)   
     instagram_link = models.URLField(blank=True,null=True)
-    m_category = models.ForeignKey('MatersCategory', on_delete=models.CASCADE, blank=True, null=True)
+    m_category = models.ForeignKey('MastersCategory', on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.user.username
@@ -23,7 +23,7 @@ class Post(models.Model):
     def __str__(self):
         return self.user.username
     
-class MatersCategory(models.Model):
+class MastersCategory(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
