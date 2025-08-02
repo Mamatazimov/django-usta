@@ -6,6 +6,7 @@ from django.views.generic import TemplateView
 from .form import ProfileForm, UserForm, PostForm, CategoryForm
 from .models import Profile, Post, MatersCategory
 from register.models import CustomUser
+from chat.models import Message
 # Create your views here.
 
 class HomePageView(TemplateView):
@@ -134,8 +135,33 @@ class MasterTemplateView(View):
         user=self.request.user
         master=CustomUser.objects.get(username=master_username)
         posts=Post.objects.filter(user_id=master.id)
+        obj1 = Message.objects.filter(sender=user,receiver=master)
+        obj2 = Message.objects.filter(sender=master,receiver=user)
+        comb = (obj1 | obj2).distinct()
 
-        return render(request,"master.html",{"master":master,"user":user,"posts":posts})
+        room_name = f"{user.username}-{master.username}"
+        try:
+            room_name = comb[0].room_name
+        except IndexError:
+            pass
+
+        return render(request,"master.html",{"master":master,"user":user,"posts":posts,"room_name":room_name})
+
+
+class ChatsView(View):
+    def get(self,request):
+        user = request.user
+        chats = Message.objects.filter(room_name__contains = user.username)
+        rooms = list(set([chat.room_name for chat in chats]))
+        resp=[]
+        for room in rooms:
+            chat = Message.objects.filter(room_name=room).first()
+            other=chat.receiver if chat.sender == user else chat.sender
+            
+            resp.append({"room":room,"other":other})
+        print(resp)
+            
+        return render(request,'chats.html',{"chats":resp})
 
 
 

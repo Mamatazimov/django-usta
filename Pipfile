@@ -7,6 +7,9 @@ name = "pypi"
 django = "*"
 pillow = "*"
 channels = "*"
+uvicorn = {extras = ["standard"], version = "*"}
+daphne = "*"
+asgiref = "*"
 
 [dev-packages]
 

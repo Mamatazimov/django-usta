@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Asosiy sahifa{% endblock %}
+
+{% block content %}
+<div class="ui container">
+    <div class="ui menu fixed" style="max-width: 80rem;left: 50%;transform: translateX(-50%);">
+        <a class="item" href="/home">Asosiy sahifa</a>
+        <a class="item" href="/ustalar">Ustalar</a>
+        <a class="item">Chatlar</a>
+            <div class="right menu">
+              <a href="{% url 'dashboard' %}" class="item">Profil</a>
+            </div>
+    </div>
+</div>
+<div class="container" style="margin-top:10rem;padding:0 3rem;">
+  {% for chat in chats %}
+    <div class="row" style="padding:0 10rem;border:1px solid black;border-radius:1rem;margin-top:1rem;">
+    <a href="{% url 'chat' chat.room %}"><h1>{{ chat.other }}</h1></a>
+    </div>
+  {% empty %}
+    <div class="row">
+      <h2 style="opacity:0.7;">Sizda hech qanaqa suhbat yo'q!...</h2>
+    </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
